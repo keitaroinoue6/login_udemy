@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'users',
         'passwords' => 'users',
     ],
 
@@ -40,6 +40,21 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'users' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+
+        'owners' => [
+            'driver' => 'session',
+            'provider' => 'owners',
+        ],
+
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admin',
+        ],
     ],
 
     /*
@@ -64,6 +79,15 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
+        'owners' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Owner::class,
+        ],
+        'admin' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
+        ],
+        
 
         // 'users' => [
         //     'driver' => 'database',
@@ -90,7 +114,25 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',
+            // 期限
             'expire' => 60,
+            // ログインを何度か間違えた時に何秒間かログインできなくする
+            'throttle' => 60,
+        ],
+        'owners' => [
+            'provider' => 'owners',
+            'table' => 'owner_password_resets',
+            // 期限
+            'expire' => 60,
+            // ログインを何度か間違えた時に何秒間かログインできなくする
+            'throttle' => 60,
+        ],
+        'admin' => [
+            'provider' => 'admin',
+            'table' => 'admin_password_resets',
+            // 期限
+            'expire' => 60,
+            // ログインを何度か間違えた時に何秒間かログインできなくする
             'throttle' => 60,
         ],
     ],

@@ -11,6 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
+    #39
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -45,7 +46,16 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        //　owner関連のURLだったら。
+        // これらの'admin','users'などは以前作成したconfig/authのguardsの中の中のものと一致位しないといけない
+        if($this->routeIs('owner.*')){
+            $guard = 'owners';
+        }elseif($this->routeIs('admin.*')){
+            $guard = 'admin';
+        }else {
+            $guard = 'users';
+        }
+        if (! Auth::guard($guard)->attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
