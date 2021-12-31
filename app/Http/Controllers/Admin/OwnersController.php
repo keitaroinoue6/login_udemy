@@ -31,14 +31,15 @@ class OwnersController extends Controller
 
         // dd($e_all, $q_get, $q_first, $c_test);
 
-        $data_now = Carbon::now();
-        $data_parse = Carbon::parse(now());
-        echo $data_now->year;
-        echo $data_parse;
-        $e_all = Owner::all(); 
-        $q_get = DB::table('owners')-> select('name', 'created_at')->get();  // テーブル指定し、selectで表示するカラムを指定し、get()で値を取得する
+        // $data_now = Carbon::now();
+        // $data_parse = Carbon::parse(now());
+        // echo $data_now->year;
+        // echo $data_parse;
+        // $e_all = Owner::all(); 
+        // $q_get = DB::table('owners')-> select('name', 'created_at')->get();  // テーブル指定し、selectで表示するカラムを指定し、get()で値を取得する
 
-        return view('admin.owners.index', compact('e_all','q_get'));
+        $owners = Owner::select('name','email','created_at')->get();
+        return view('admin.owners.index', compact('owners'));
     }
 
     /**
@@ -48,7 +49,7 @@ class OwnersController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.owners.create');
     }
 
     /**
