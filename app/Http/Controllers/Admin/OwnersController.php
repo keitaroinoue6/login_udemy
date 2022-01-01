@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Owner;  // Eloquent エロクアント
 use Illuminate\Support\Facades\DB; // QueryBUilder クエリビルダ
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class OwnersController extends Controller
 {
@@ -60,7 +61,24 @@ class OwnersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // storeメソッドの引数はメソッドインジェクションというもので
+        // Formに入力された値がRequestクラスになって、それをインスタンス化するという意味になる
+        // $request->name;
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:owners'],
+            'password' => ['required', 'string','confirmed', 'min:8'],
+        ]);
+
+        Owner::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()
+        ->route('admin.owners.index')
+        ->with('message', 'オーナー登録を実施しました');
     }
 
     /**
