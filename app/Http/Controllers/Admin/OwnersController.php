@@ -39,7 +39,7 @@ class OwnersController extends Controller
         // $e_all = Owner::all(); 
         // $q_get = DB::table('owners')-> select('name', 'created_at')->get();  // テーブル指定し、selectで表示するカラムを指定し、get()で値を取得する
 
-        $owners = Owner::select('name','email','created_at')->get();
+        $owners = Owner::select('id','name','email','created_at')->get();
         return view('admin.owners.index', compact('owners'));
     }
 
@@ -67,7 +67,7 @@ class OwnersController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:owners'],
-            'password' => ['required', 'string','confirmed', 'min:8'],
+            'password' => ['required','string','confirmed', 'min:8'],
         ]);
 
         Owner::create([
@@ -100,7 +100,9 @@ class OwnersController extends Controller
      */
     public function edit($id)
     {
-        //
+        $owner = Owner::findOrFail($id);
+        // dd($owner);
+        return view('admin.owners.edit', compact('owner'));
     }
 
     /**
@@ -112,7 +114,15 @@ class OwnersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $owner = Owner::findOrFail($id);
+        $owner->name = $request->name;
+        $owner->email = $request->email;
+        $owner->password = Hash::make($request->password);
+        $owner->save();
+
+        return redirect()
+        ->route('admin.owners.index')
+        ->with('message', 'オーナー情報を更新しました。');
     }
 
     /**
